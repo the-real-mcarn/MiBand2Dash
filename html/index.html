@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+
+    <title>MiBand 2 Dashboard</title>
+
+    <link rel="stylesheet" href="../node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="../node_modules/@mdi/font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../css/mdi.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="has-background-white-ter">
+    <!-- Navigation -->
+    <div class="tabs has-background-white">
+        <ul>
+            <li><a data-target="main">Main</a></li>
+            <li class="is-active"><a data-target="settings">Settings</a></li>
+            <li><a data-target="about">About</a></li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <section class="section py-0" id="main" style="display: none;">
+        <div class="container">
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-8">
+                    <div class="tile">
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification box is-dark">
+                                <h5 class="title is-5">
+                                    <span class="icon is-pulled-right">
+                                        <i class="mdi mdi-clock-time-four"></i>
+                                    </span>
+                                    Time
+                                </h5>
+                                <h1 data-field="time" class="title is-1">--:--</h1>
+                                <h2 data-field="date" class="subtitle">----------</h2>
+
+                                <div class="buttons">
+                                    <button data-button="time_set" class="button is-light">Set to PC time</button>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification box is-danger">
+                                <h5 class="title is-5">
+                                    <span class="icon is-pulled-right">
+                                        <i class="mdi mdi-heart-pulse"></i>
+                                    </span>
+                                    Current HR
+                                </h5>
+                                <h1 data-field="hr_current" class="title is-1">--</h1>
+                                <h2 class="subtitle">BPM</h2>
+
+                                <div class="buttons">
+                                    <button data-button="hr_toggle" class="button is-danger is-light">Turn off</button>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="tile is-parent">
+                        <article class="tile is-child notification box">
+                            <h5 class="title is-5">
+                                <span class="icon is-pulled-right">
+                                    <i class="mdi mdi-chart-timeline-variant"></i>
+                                </span>
+                                HR graph
+                                <div data-field="hr_graph">
+                                    <canvas></canvas>
+                                </div>
+                            </h5>
+                        </article>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child notification box is-info">
+                        <h5 class="title is-5 my-0">
+                            <span class="icon is-pulled-right">
+                                <i class="mdi mdi-information"></i>
+                            </span>
+                            Info
+                        </h5>
+
+                        <h6 class="subtitle is-6 my-0">General</h6>
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-shoe-print"></i>
+                            </span>
+                            Steps:
+                            <span data-field="steps" class="ml-2"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-map-marker-distance"></i>
+                            </span>
+                            Distance:
+                            <span data-field="distance" class="ml-2"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-food"></i>
+                            </span>
+                            Calories:
+                            <span data-field="calories" class="ml-2"></span>
+                        </span><br>
+
+                        <!-- <h6 class="subtitle is-6 my-0">Profile</h6>
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-gender-male-female"></i>
+                            </span>
+                            Gender: 
+                            <span data-field="gender" class="ml-2"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-human-male-height-variant"></i>
+                            </span>
+                            Height: 
+                            <span data-field="height" class="ml-2"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-weight-kilogram"></i>
+                            </span>
+                            Weight: 
+                            <span data-field="weight" class="ml-2"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-account-outline"></i>
+                            </span>
+                            ID: 
+                            <span data-field="id" class="ml-2"></span>
+                        </span> -->
+
+                        <h6 class="subtitle is-6 my-0">Device</h6>
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-pound"></i>
+                            </span>
+                            Serial: <br>
+                            <span class="ml-5" data-field="serial"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-pound"></i>
+                            </span>
+                            Software revision: <br>
+                            <span class="ml-5" data-field="swrev"></span>
+                        </span><br>
+
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-chip"></i>
+                            </span>
+                            Hardware revision: <br>
+                            <span class="ml-5" data-field="hwrev"></span>
+                        </span><br>
+
+                        <span>
+                            Battery: <br>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-battery-bluetooth"></i>
+                            </span>
+                            Current:
+                            <span data-field="battery" class="ml-2"></span>
+                            <br>
+
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-battery-charging-100"></i>
+                            </span>
+                            Charging:
+                            <span data-field="charging" class="ml-2"></span>
+                        </span><br><br>
+
+                        <div class="buttons">
+                            <button data-button="refresh" class="button is-info is-light">Refresh</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section py-0" id="settings" style="display: block;">
+        <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <h2 class="subtitle">
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-connection"></i>
+                        </span>
+                        Connection
+                    </h2>
+                    <div class="field">
+                        <label class="label">
+                            Status
+                        </label>
+                        <div class="field">
+                            <div id="settings-status">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-18px mdi-bluetooth-off"></i>
+                                </span>
+                                <span>
+                                    Not connected
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button data-button="settings_scan" class="button is-fullwidth">
+                                    Scan for BLE Devices
+                                </button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button data-button="settings_disconnect" class="button is-danger is-fullwidth">
+                                    Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">
+                            Devices
+                        </label>
+                        <div id="settings-device-list"></div>
+                    </div>
+                    <article id="settings-no-device" class="message is-small is-danger">
+                        <div class="message-body">
+                            No devices found!
+                        </div>
+                    </article>
+                </div>
+                <div class="column">
+                    <h2 class="subtitle">
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-application-export"></i>
+                        </span>
+                        Export
+                    </h2>
+                    <div class="field">
+                        <label class="label">Options</label>
+                        <label class="checkbox">
+                            <input type="checkbox">
+                            Pretty print
+                        </label>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button data-button="settings_export" class="button is-fullwidth">
+                                Export JSON
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+
+                    <h2 class="subtitle">
+                        <span class="icon is-medium">
+                            <i class="mdi mdi-account"></i>
+                        </span>
+                        Profile
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section py-0" id="about" style="display: none;">
+        <div class="container">
+            <h1 class="title">MiBand 2 Dashboard</h1>
+            <h2 class="subtitle">Simple electron dashboard for displaying and exporting MiBand 2 data</h2>
+
+            <span class="icon is-small">
+                <i class="mdi mdi-18px mdi-code-braces"></i>
+            </span>
+            Coded by <a href="https://arnweb.nl/">Arne van Iterson</a>.
+            <br>
+
+            <span class="icon is-small">
+                <i class="mdi mdi-18px mdi-pencil"></i>
+            </span>
+            Fitness bracelet Xiaomi Mi Band 2 Icon by Stan Fisher from <a
+                href="https://thenounproject.com/term/fitness-bracelet-xiaomi-mi-band-2/1391566/">the Noun Project</a>.
+            <br>
+
+            <span class="icon is-small">
+                <i class="mdi mdi-18px mdi-package-variant-closed"></i>
+            </span>
+            Miband-js package by Volodymyr Shymanskyy <a href="https://github.com/vshymanskyy/miband-js">on Github</a>.
+            <br><br>
+
+            <a href="https://bulma.io">
+                <img src="https://bulma.io/images/made-with-bulma--semiblack.png" alt="Made with Bulma" width="128"
+                    height="24">
+            </a>
+        </div>
+    </section>
+
+    <div class="container" id="notification-area"></div>
+
+    <script src="../build/bundle.js"></script>
+
+</body>
+
+</html>

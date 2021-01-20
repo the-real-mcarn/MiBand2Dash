@@ -1,0 +1,24 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    height: 100vh;
+}
+
+section {
+    height: calc(100vh - 2.55rem - 1.5em);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div#notification-area {
+    position: absolute;
+    width: calc(50% - 1em);
+    bottom: 1em;
+    right: 1em;
+}
+
+.notification {
+    padding: 1.25rem 1.5rem 1.25rem 1.5rem;
+}
