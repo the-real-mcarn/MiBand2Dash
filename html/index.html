@@ -58,6 +58,7 @@
 
                                 <div class="buttons">
                                     <button data-button="hr_toggle" class="button is-danger is-light">Turn off</button>
+                                    <button data-button="hr_reset" class="button is-danger is-light">Reset</button>
                                 </div>
                             </article>
                         </div>
@@ -144,6 +145,14 @@
                         </span> -->
 
                         <h6 class="subtitle is-6 my-0">Device</h6>
+                        <span>
+                            <span class="icon is-small ml-2 mr-1">
+                                <i class="mdi mdi-18px mdi-bluetooth"></i>
+                            </span>
+                            Name: <br>
+                            <span class="ml-5" data-field="name"></span>
+                        </span><br>
+
                         <span>
                             <span class="icon is-small ml-2 mr-1">
                                 <i class="mdi mdi-18px mdi-pound"></i>
@@ -254,7 +263,7 @@
                     <div class="field">
                         <label class="label">Options</label>
                         <label class="checkbox">
-                            <input type="checkbox">
+                            <input data-button="settings_export_pretty" type="checkbox" checked>
                             Pretty print
                         </label>
                     </div>
@@ -273,6 +282,13 @@
                         </span>
                         Profile
                     </h2>
+                    <article class="message is-small is-warning">
+                        <div class="message-body">
+                            The profile includes gender, date of birth, height and weight. It is used by the MiBand to
+                            calculate the distance and calories based on the amount of steps and it cannot be read of
+                            the band once it is set. Setting it using this program is not yet implemented.
+                        </div>
+                    </article>
                 </div>
             </div>
         </div>

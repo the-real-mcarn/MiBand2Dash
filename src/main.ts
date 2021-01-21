@@ -1,11 +1,16 @@
-import { app, BrowserWindow, shell, ipcMain, globalShortcut } from "electron";
+import { app, BrowserWindow, shell, ipcMain, globalShortcut, dialog } from "electron";
 import path from "path";
 import MiBand from "miband";
+import fs from "fs";
+
+let now: Date;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Bluetooth = require("webbluetooth").Bluetooth;
 let bluetoothDevices: { id: string, select: () => void }[] = [];
 let device: any;
+
+const hrData = new Map<number, number | undefined>();
 
 const deviceFound = (bluetoothDevice: BluetoothDevice, selectFn: () => void) => {
     const discovered = bluetoothDevices.some((device: { id: string; }) => {
@@ -40,6 +45,48 @@ function handleDisconnect(): void {
     });
 }
 
+function exportJson(pretty: boolean): void {
+    dialog.showSaveDialog({
+        title: "Select path to export to",
+        defaultPath: path.join(__dirname, "../export.json"),
+        buttonLabel: "Export",
+        filters: [
+            {
+                name: "JSON File",
+                extensions: ["json", "txt"]
+            },],
+        properties: []
+    }).then((file: Electron.SaveDialogReturnValue) => {
+        if (!file.canceled && file.filePath != undefined) {
+            fs.writeFile(file.filePath.toString(),
+                (pretty) ? JSON.stringify([...hrData], null, 2) : JSON.stringify([...hrData]), 
+                function (err) {
+                    if (err) throw err;
+                    win.webContents.send("mi", {
+                        type: "success",
+                        data: {
+                            message: "Exported to " + String(file.filePath)
+                        }
+                    });
+                });
+        } else {
+            win.webContents.send("mi", {
+                type: "warning",
+                data: {
+                    message: "Export canceled"
+                }
+            });
+        }
+    }).catch(err => {
+        win.webContents.send("mi", {
+            type: "error",
+            data: {
+                message: `Export failed: ${String(err)}`
+            }
+        });
+    });
+}
+
 async function handleQuery(query: string[]) {
     return new Promise((resolve, reject) => {
         let result: {
@@ -60,7 +107,7 @@ async function handleQuery(query: string[]) {
                 steps: number
             },
             swrev?: string,
-            time?: string,
+            time?: string
         };
 
         try {
@@ -115,6 +162,16 @@ async function handleQuery(query: string[]) {
                         break;
                     }
 
+                    case "export": {
+                        exportJson(false);
+                        break;
+                    }
+
+                    case "exportPretty": {
+                        exportJson(true);
+                        break;
+                    }
+
                     default: {
                         break;
                     }
@@ -144,8 +201,7 @@ async function createWindow() {
     });
 
     win.removeMenu();
-    // win.minimize();
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     globalShortcut.register("f5", function () {
         win.reload();
@@ -197,11 +253,15 @@ async function createWindow() {
                         });
 
                         app.on("window-all-closed", () => {
-                            device.gatt.disconnect();
+                            if (device != undefined) {
+                                device.gatt.disconnect();
+                            }
                             app.quit();
                         });
 
                         miband.on("heart_rate", (rate: number) => {
+                            now = new Date();
+                            hrData.set(now.getTime(), rate);
                             win.webContents.send("mi", {
                                 type: "data",
                                 data: {
@@ -231,6 +291,7 @@ async function createWindow() {
 
                 case "disconnect": {
                     device.gatt.disconnect();
+                    device = undefined;
                     break;
                 }
 
@@ -248,7 +309,6 @@ async function createWindow() {
                             }
                         });
                     });
-
                     break;
                 }
 

@@ -16,7 +16,6 @@ const buttons: {
 } = {};
 
 document.querySelectorAll("[data-field]").forEach((element) => {
-    // element.setAttribute("style", "border: 1px solid black");
     const key = element.getAttribute("data-field");
     if (key != null) {
         fields[key] = element;
@@ -24,7 +23,6 @@ document.querySelectorAll("[data-field]").forEach((element) => {
 });
 
 document.querySelectorAll("[data-button]").forEach((element) => {
-    // element.setAttribute("style", "border: 1px solid black");
     const key = element.getAttribute("data-button");
     if (key != null) {
         buttons[key] = element;
@@ -33,23 +31,36 @@ document.querySelectorAll("[data-button]").forEach((element) => {
 
 const canvas = <HTMLCanvasElement>fields.hr_graph?.children[0];
 const ctx = canvas.getContext("2d");
+let chart: Chart;
 
-const chart = new Chart(ctx!, {
-    type: "line",
-    data: {
-        datasets: [{
-            borderColor: "rgb(237, 66, 106)"
-        }]
-    },
-    options: {
-        aspectRatio: 2.75,
-        legend: {
-            display: false
+function createChart() {
+    chart = new Chart(ctx!, {
+        type: "line",
+        data: {
+            datasets: [{
+                borderColor: "rgb(237, 66, 106)"
+            }]
+        },
+        options: {
+            aspectRatio: 2.75,
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                        suggestedMax: 160
+                    }
+                }]
+            }
         }
-    }
-});
+    });
+}
 
-const hrData = new Map<number, number | undefined>();
+createChart();
+
 let hr_continuous = false;
 
 let now: Date;
@@ -90,7 +101,7 @@ function handleResponse(result: {
         steps: number
     },
     swrev?: string,
-    time?: string,
+    time?: string
 }) {
     if (result != {}) {
         for (const key in result) {
@@ -110,7 +121,6 @@ function handleResponse(result: {
                     });
                     chart.update();
 
-                    hrData.set(now.getTime(), result.hr_current);
                     fields.hr_current.innerHTML = String(result.hr_current);
                     break;
                 }
@@ -151,11 +161,6 @@ function handleResponse(result: {
                     setInterval(clock, 1000);
                     break;
                 }
-
-                default: {
-                    break;
-                }
-
             }
         }
     } else {
@@ -216,6 +221,7 @@ window.api.receive("mi", (response: { type: string, data: any }) => {
                 const spans = document.querySelectorAll("#settings-status > span");
                 spans[0].children[0].classList.replace("mdi-bluetooth-off", "mdi-bluetooth-connect");
                 spans[1].innerHTML = `Connected to ${response.data.name}`;
+                fields["name"].innerHTML = String(response.data.name);
                 break;
             }
 
@@ -243,6 +249,16 @@ window.api.receive("mi", (response: { type: string, data: any }) => {
                 break;
             }
 
+            case "success": {
+                notify("success", response.data.message);
+                break;
+            }
+
+            case "warning": {
+                notify("warning", response.data.message);
+                break;
+            }
+
             case "error": {
                 notify("danger", response.data.message);
                 break;
@@ -260,6 +276,12 @@ window.api.receive("mi", (response: { type: string, data: any }) => {
 
 buttons["settings_disconnect"]?.addEventListener("click", () => {
     if (connected.value) {
+        if (hr_continuous) {
+            sendQuery([
+                "hr_continuous"
+            ]);
+        }
+
         window.api.send("mi", {
             type: "disconnect",
             data: {}
@@ -302,6 +324,44 @@ buttons["hr_toggle"]?.addEventListener("click", (event) => {
     } else {
         notify("warning", "You are not connected to a device.");
     }
+});
+
+buttons["refresh"].addEventListener("click", (event) => {
+    event.preventDefault();
+    if (connected.value) {
+        sendQuery([
+            "time", "steps", "hwrev", "swrev", "serial", "battery"
+        ]);
+    } else {
+        notify("warning", "You are not connected to a device.");
+    }
+});
+
+buttons["hr_reset"].addEventListener("click", (event) => {
+    event.preventDefault();
+    chart.destroy();
+    createChart();
+});
+
+buttons["settings_export"].addEventListener("click", (event) => {
+    event.preventDefault();
+    if ((<HTMLInputElement>buttons["settings_export_pretty"])?.checked) {
+        sendQuery([
+            "exportPretty"
+        ]);
+    } else {
+        sendQuery([
+            "export"
+        ]);
+    }
+});
+
+buttons["time_set"].addEventListener("click", (event) => {
+    event.preventDefault();
+    notify(
+        "warning",
+        "Not yet implemented!"
+    );
 });
 
 const links = document.querySelectorAll("a[href^=\"http\"]");
