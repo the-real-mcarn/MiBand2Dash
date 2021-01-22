@@ -1,0 +1,44 @@
+{
+    "productName": "MiBand2Dash",
+    "directories": {
+        "buildResources": "build/",
+        "output": "release/"
+    },
+    "copyright": "Made by Arne van Iterson",
+    "files": [
+        "build/bundle.js",
+        "build/main.js",
+        "build/preload.js",
+        "css/*",
+        "html/*",
+        "res/*"
+    ],
+    "win": {
+        "icon": "res/icon.png",
+        "target": {
+            "target": "portable",
+            "arch": [
+                "x64",
+                "ia32"
+            ]
+        }
+    },
+    "mac": {
+        "icon": "res/icon.png",
+        "target": {
+            "target": "dmg"
+        },
+        "category": "com.mcarn.miband2dash"
+    },
+    "linux": {
+        "icon": "res/icon.png",
+        "target": {
+            "target": "AppImage",
+            "arch": [
+                "x64",
+                "arm64"
+            ]
+        },
+        "category": "Utility"
+    }
+}

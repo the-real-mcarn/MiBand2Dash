@@ -2,11 +2,17 @@
   "name": "miband2dash",
   "version": "1.0.0",
   "description": "Simple electron dashboard for saving / storing MiBand 2 data using the MiBand-JS library. ",
-  "main": "build/index.js",
+  "main": "./build/main.js",
   "scripts": {
-    "start": "npm run compile && electron ./build/main.js",
-    "compile": "tsc && npm run pack",
-    "pack": "browserify ./build/index.js -o ./build/bundle.js"
+    "start": "npm run compile && cross-env NODE_ENV=dev electron ./build/main.js",
+    "compile": "tsc && npm run pack && npm run lint",
+    "pack": "browserify ./build/index.js -o ./build/bundle.js",
+    "lint": "eslint .",
+    "build:all": "npm run compile && electron-builder build -mwl",
+    "build:win": "npm run compile && electron-builder build --windows",
+    "build:mac": "npm run compile && electron-builder build --mac",
+    "build:linux": "npm run compile && electron-builder build --linux",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": {
     "type": "git",
@@ -17,7 +23,7 @@
     "node"
   ],
   "author": "Arne van Iterson",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "@mdi/font": "^5.8.55",
     "bulma": "^0.9.1",
@@ -28,11 +34,12 @@
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.29",
+    "@types/chartjs": "0.0.31",
     "@types/noble": "0.0.40",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.11.0",
-    "@types/chartjs": "0.0.31",
     "browserify": "^17.0.0",
+    "cross-env": "^7.0.3",
     "electron": "^11.1.1",
     "electron-rebuild": "^2.3.4",
     "eslint": "^7.16.0",
